@@ -1,4 +1,5 @@
 import 'package:deezer/deezer.dart';
+import 'package:xelen/features/handler.dart';
 
 import 'models.dart';
 
@@ -8,22 +9,30 @@ abstract class PlaylistService {
   Future<PlayListModel> fetchPlayList(String id);
 }
 
-class DeezerPlaylistService extends PlaylistService {
+class PlaylistRequestFailure extends Failure {}
+
+class PlaylistCastFailure extends Failure {}
+
+class DeezerPlaylistService extends PlaylistService with ResultHandler {
   const DeezerPlaylistService(this._client);
 
   final Deezer _client;
 
   @override
   Future<PlayListModel> fetchPlayList(String id) async {
-    final response = await _client.getPlaylistTracks(id);
-
-    return PlayListModel(
-      tracks:
-          List<TrackModel>.from(response?.data?.map(fromResponseModel) ?? [])
-              .toList(),
-      total: response?.total,
-      checksum: response?.checksum,
+    final response = await handlerService(
+      request: () async => await _client.getPlaylistTracks(id),
+      requestFailure: (err) => PlaylistRequestFailure(),
+      parser: (response) => PlayListModel(
+        tracks:
+            List<TrackModel>.from(response?.data?.map(fromResponseModel) ?? [])
+                .toList(),
+        total: response?.total,
+        checksum: response?.checksum,
+      ),
+      parserFailure: (err) => PlaylistCastFailure(),
     );
+    return response!;
   }
 }
 
