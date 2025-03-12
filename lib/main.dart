@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'features/player/player_page.dart';
+import 'features/playlist/models.dart';
 import 'features/playlist/providers.dart';
 
 void main() async {
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Xelen',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -29,7 +31,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deezer = ref.watch(deezerProvider);
-    return deezer.map(
+    return deezer.when(
       data: (_) => Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -49,12 +51,12 @@ class HomePage extends ConsumerWidget {
           ],
         ),
       ),
-      error: (_) => Scaffold(
+      error: (_, __) => Scaffold(
         body: Center(
           child: Text("Error no se pudo iniciar la aplicación"),
         ),
       ),
-      loading: (_) => ColoredBox(color: Theme.of(context).colorScheme.primary),
+      loading: () => ColoredBox(color: Theme.of(context).colorScheme.primary),
     );
   }
 }
@@ -65,29 +67,50 @@ class PlayList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlist = ref.watch(playListProvider);
-    return playlist.map(
+    return playlist.when(
       data: (response) => ListView.separated(
         separatorBuilder: (_, __) => SizedBox(height: 8),
         itemBuilder: (_, index) {
-          final track = response.value.tracks[index];
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: ListTile(
-                leading: SizedBox.square(
-                  dimension: 40,
-                  child: Image.network(track.album?.cover ?? ''),
-                ),
-                title: Text(track.title ?? "Sin título"),
-                trailing: Icon(Icons.play_arrow),
-              ),
-            ),
-          );
+          final track = response.tracks[index];
+          return TrackItem(track: track);
         },
-        itemCount: response.value.tracks.length,
+        itemCount: response.tracks.length,
       ),
-      error: (_) => Text("Error al cargar la playlist"),
-      loading: (_) => Center(child: CircularProgressIndicator()),
+      error: (_, __) => Text("Error al cargar la playlist"),
+      loading: () => Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class TrackItem extends StatelessWidget {
+  const TrackItem({
+    super.key,
+    required this.track,
+  });
+
+  final TrackModel track;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => PlayerPage(track)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: ListTile(
+            leading: SizedBox.square(
+              dimension: 40,
+              child: Image.network(track.album?.cover ?? ''),
+            ),
+            title: Text(track.title ?? "Sin título"),
+            trailing: Icon(Icons.play_arrow),
+          ),
+        ),
+      ),
     );
   }
 }
