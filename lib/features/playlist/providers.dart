@@ -30,10 +30,10 @@ final deezerProvider = FutureProvider<Deezer>((_) async {
 final deezerInstanceProvider = Provider<DeezerInstance>(
   (ref) {
     final provider = ref.watch(deezerProvider);
-    return provider.map(
-      data: (instance) => DeezerInstanceSuccess(instance.value),
-      error: (_) => DeezerInstanceError(),
-      loading: (_) => DeezerInstanceLoading(),
+    return provider.when(
+      data: (instance) => DeezerInstanceSuccess(instance),
+      error: (_, __) => DeezerInstanceError(),
+      loading: () => DeezerInstanceLoading(),
     );
   },
 );
