@@ -15,24 +15,12 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerPageState extends State<PlayerPage> {
   late AudioPlayer _audioPlayer;
-  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
     _audioPlayer.setUrl(widget.track.preview!);
-  }
-
-  void _togglePlayPause() {
-    if (isPlaying) {
-      _audioPlayer.pause();
-    } else {
-      _audioPlayer.play();
-    }
-    setState(() {
-      isPlaying = !isPlaying;
-    });
   }
 
   @override
@@ -109,12 +97,14 @@ class _PlayerPageState extends State<PlayerPage> {
               children: [
                 Icon(Icons.skip_previous),
                 Gap(8),
-                Card(
-                  shape: CircleBorder(),
-                  child: IconButton(
-                    icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-                    onPressed: _togglePlayPause,
-                  ),
+                PlayOrPauseButton(
+                  onTap: (bool isPlaying) {
+                    if (isPlaying) {
+                      _audioPlayer.pause();
+                    } else {
+                      _audioPlayer.play();
+                    }
+                  },
                 ),
                 Gap(8),
                 Icon(Icons.skip_next),
@@ -122,6 +112,37 @@ class _PlayerPageState extends State<PlayerPage> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PlayOrPauseButton extends StatefulWidget {
+  const PlayOrPauseButton({super.key, required this.onTap});
+
+  final Function(bool isPlaying) onTap;
+
+  @override
+  State<PlayOrPauseButton> createState() => _PlayOrPauseButtonState();
+}
+
+class _PlayOrPauseButtonState extends State<PlayOrPauseButton> {
+  bool isPlaying = false;
+
+  void _togglePlayPause() {
+    widget.onTap(isPlaying);
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: CircleBorder(),
+      child: IconButton(
+        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+        onPressed: _togglePlayPause,
       ),
     );
   }
