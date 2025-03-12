@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../playlist/models.dart';
@@ -49,12 +50,12 @@ class _PlayerPageState extends State<PlayerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 16),
+            Gap(16),
             Image.network(
               widget.track.album?.cover ?? '',
               fit: BoxFit.fill,
             ),
-            SizedBox(height: 16),
+            Gap(16),
             Text(
               widget.track.title ?? 'Sin título',
               overflow: TextOverflow.ellipsis,
@@ -63,7 +64,7 @@ class _PlayerPageState extends State<PlayerPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 4),
+            Gap(4),
             Text(
               widget.track.artist?.name ?? 'Sin título',
               style: TextStyle(
@@ -71,7 +72,7 @@ class _PlayerPageState extends State<PlayerPage> {
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 8),
+            Gap(8),
             StreamBuilder<Duration>(
               stream: _audioPlayer.positionStream,
               builder: (context, snapshot) {
@@ -102,12 +103,12 @@ class _PlayerPageState extends State<PlayerPage> {
                 );
               },
             ),
-            SizedBox(height: 8),
+            Gap(8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.skip_previous),
-                SizedBox(width: 8),
+                Gap(8),
                 Card(
                   shape: CircleBorder(),
                   child: IconButton(
@@ -115,7 +116,7 @@ class _PlayerPageState extends State<PlayerPage> {
                     onPressed: _togglePlayPause,
                   ),
                 ),
-                SizedBox(width: 8),
+                Gap(8),
                 Icon(Icons.skip_next),
               ],
             )

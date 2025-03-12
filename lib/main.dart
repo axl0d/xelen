@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
 import 'features/player/player_page.dart';
 import 'features/playlist/models.dart';
@@ -69,7 +70,7 @@ class PlayList extends ConsumerWidget {
     final playlist = ref.watch(playListProvider);
     return playlist.when(
       data: (response) => ListView.separated(
-        separatorBuilder: (_, __) => SizedBox(height: 8),
+        separatorBuilder: (_, __) => Gap(8),
         itemBuilder: (_, index) {
           final track = response.tracks[index];
           return TrackItem(track: track);
