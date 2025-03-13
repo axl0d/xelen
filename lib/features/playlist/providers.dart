@@ -38,7 +38,7 @@ final deezerInstanceProvider = Provider<DeezerInstance>(
   },
 );
 
-final playListProvider = FutureProvider<PlayListModel>(
+final playListProvider = FutureProvider<PlayListModel?>(
   (ref) async {
     final deezerClient =
         ref.watch(deezerInstanceProvider) as DeezerInstanceSuccess;

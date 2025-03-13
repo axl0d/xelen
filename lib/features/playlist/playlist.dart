@@ -13,14 +13,16 @@ class PlayList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final playlist = ref.watch(playListProvider);
     return playlist.when(
-      data: (response) => ListView.separated(
-        separatorBuilder: (_, __) => Gap(8),
-        itemBuilder: (_, index) {
-          final track = response.tracks[index];
-          return _TrackItem(track: track);
-        },
-        itemCount: response.tracks.length,
-      ),
+      data: (response) => response == null
+          ? const Text("No hay playlist")
+          : ListView.separated(
+              separatorBuilder: (_, __) => Gap(8),
+              itemBuilder: (_, index) {
+                final track = response.tracks[index];
+                return _TrackItem(track: track);
+              },
+              itemCount: response.tracks.length,
+            ),
       error: (_, __) => Text("Error al cargar la playlist"),
       loading: () => Center(child: CircularProgressIndicator()),
     );

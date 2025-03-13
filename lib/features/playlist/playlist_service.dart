@@ -6,7 +6,7 @@ import 'models.dart';
 abstract class PlaylistService {
   const PlaylistService();
 
-  Future<PlayListModel> fetchPlayList(String id);
+  Future<PlayListModel?> fetchPlayList(String id);
 }
 
 class PlaylistRequestFailure extends Failure {}
@@ -19,7 +19,7 @@ class DeezerPlaylistService extends PlaylistService with ResultHandler {
   final Deezer _client;
 
   @override
-  Future<PlayListModel> fetchPlayList(String id) async {
+  Future<PlayListModel?> fetchPlayList(String id) async {
     final response = await handlerService(
       request: () async => await _client.getPlaylistTracks(id),
       onRequestFailure: (err) => PlaylistRequestFailure(),
@@ -32,7 +32,7 @@ class DeezerPlaylistService extends PlaylistService with ResultHandler {
       ),
       onParserFailure: (err) => PlaylistCastFailure(),
     );
-    return response!;
+    return response;
   }
 }
 
