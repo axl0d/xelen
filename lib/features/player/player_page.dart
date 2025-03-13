@@ -134,7 +134,7 @@ class _PlayerPageState extends State<PlayerPage> {
 class PlayOrPauseButton extends StatefulWidget {
   const PlayOrPauseButton({super.key, required this.onTap});
 
-  final Function(bool isPlaying) onTap;
+  final ValueChanged<bool> onTap;
 
   @override
   State<PlayOrPauseButton> createState() => _PlayOrPauseButtonState();
