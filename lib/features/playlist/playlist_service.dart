@@ -22,7 +22,7 @@ class DeezerPlaylistService extends PlaylistService with ResultHandler {
   Future<PlayListModel> fetchPlayList(String id) async {
     final response = await handlerService(
       request: () async => await _client.getPlaylistTracks(id),
-      requestFailure: (err) => PlaylistRequestFailure(),
+      onRequestFailure: (err) => PlaylistRequestFailure(),
       parser: (response) => PlayListModel(
         tracks:
             List<TrackModel>.from(response?.data?.map(fromResponseModel) ?? [])
@@ -30,7 +30,7 @@ class DeezerPlaylistService extends PlaylistService with ResultHandler {
         total: response?.total,
         checksum: response?.checksum,
       ),
-      parserFailure: (err) => PlaylistCastFailure(),
+      onParserFailure: (err) => PlaylistCastFailure(),
     );
     return response!;
   }

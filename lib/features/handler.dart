@@ -73,11 +73,11 @@ mixin ResultHandler {
 
   Future<M?> handlerService<R, M>({
     required Future<R> Function() request,
-    required Failure Function(dynamic err) requestFailure,
+    required Failure Function(dynamic err) onRequestFailure,
     required M Function(R response) parser,
-    required Failure Function(dynamic err) parserFailure,
+    required Failure Function(dynamic err) onParserFailure,
   }) async {
-    final eitherRequest = await handlerFutureEither(request, requestFailure);
+    final eitherRequest = await handlerFutureEither(request, onRequestFailure);
 
     final responseOrFailureRequest = eitherRequest.fold((l) => l, (r) => r);
     if (responseOrFailureRequest is Failure) return null;
@@ -85,7 +85,7 @@ mixin ResultHandler {
 
     final eitherCast = handlerEither(
       () => parser(resultRequest),
-      parserFailure,
+      onParserFailure,
     );
     final resultOrFailCast = eitherCast.fold((l) => l, (r) => r);
     if (resultOrFailCast is Failure) return null;
