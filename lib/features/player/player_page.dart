@@ -38,10 +38,23 @@ class _PlayerPageState extends State<PlayerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Gap(16),
-            Image.network(
-              widget.track.album?.cover ?? '',
-              fit: BoxFit.fill,
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    widget.track.album?.cover ?? '',
+                    fit: BoxFit.fill,
+                  ),
+                  Opacity(
+                    opacity: 0.5,
+                    child: Image.asset(
+                      "assets/img/flutter_ec_logo.png",
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ],
+              ),
             ),
             Gap(16),
             Text(
@@ -109,7 +122,8 @@ class _PlayerPageState extends State<PlayerPage> {
                 Gap(8),
                 Icon(Icons.skip_next),
               ],
-            )
+            ),
+            Gap(16),
           ],
         ),
       ),
